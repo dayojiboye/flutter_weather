@@ -9,6 +9,7 @@ const Color kWhite = Color(0XFFFFFFFF);
 
 themeData(context) => ThemeData(
       fontFamily: "Aeonik",
+      primaryColor: kBackground,
       brightness: Brightness.light,
       visualDensity: VisualDensity.adaptivePlatformDensity,
       splashFactory: NoSplash.splashFactory,

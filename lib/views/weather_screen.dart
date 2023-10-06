@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_weather/enums/view_state.dart';
+import 'package:flutter_weather/models/weather_model.dart';
+import 'package:flutter_weather/services/api.dart';
 import 'package:flutter_weather/services/location.dart';
 import 'package:flutter_weather/utils/theme.dart';
 import 'package:flutter_weather/widgets/loading_indicator.dart';
@@ -13,15 +16,44 @@ class WeatherScreen extends StatefulWidget {
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
-  String? _currentAddress;
-  Position? _currentPosition;
   bool _isLocationLoading = true;
   String _locationError = "";
+  late WeatherModel _weatherData;
+  final TextEditingController _cityController = TextEditingController();
+  ViewState _currentState = ViewState.IDLE;
+  String _error = "";
 
   @override
   void initState() {
     super.initState();
     _getCurrentPosition();
+  }
+
+  @override
+  void dispose() {
+    _cityController.dispose();
+    super.dispose();
+  }
+
+  void _getWeather(double? latitude, double? longitude) async {
+    WeatherModel data = await API(
+        latitude: latitude,
+        longitude: longitude,
+        setState: (value) {
+          setState(() {
+            _currentState = value;
+          });
+        },
+        q: _cityController.text.isNotEmpty
+            ? _cityController.text
+            : "$latitude,$longitude",
+        setError: (err) {
+          setState(() {
+            _error = err;
+          });
+        }).fetchWeather();
+
+    setState(() => _weatherData = data);
   }
 
   Future<void> _getCurrentPosition() async {
@@ -33,21 +65,45 @@ class _WeatherScreenState extends State<WeatherScreen> {
     if (!hasPermission) return;
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
         .then((Position position) {
-      setState(() => _currentPosition = position);
+      _getWeather(position.latitude, position.longitude);
     }).catchError((e) {
       debugPrint(e);
     });
   }
 
+  Widget? renderContent() {
+    switch (_currentState) {
+      case ViewState.LOADING:
+        return const LoadingIndicator();
+
+      case ViewState.ERROR:
+        return Center(
+          child: Text(_error),
+        );
+
+      case ViewState.SUCCESS:
+        return Center(
+          child: Text(_weatherData.location?.name ?? ""),
+        );
+
+      default:
+        return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: kBackground,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: kBackground,
+        backgroundColor: Colors.transparent,
         leading: IconButton(
-          onPressed: () {},
+          disabledColor: const Color.fromARGB(255, 114, 113, 113),
+          onPressed: _isLocationLoading || _currentState == ViewState.LOADING
+              ? null
+              : () {},
           icon: const Icon(
             Icons.search,
             size: 32,
@@ -58,24 +114,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
           ? const LoadingIndicator()
           : _locationError.isNotEmpty
               ? LocationError(errorMessage: _locationError)
-              : null,
-      // body: SafeArea(
-      //   child: Padding(
-      //     padding: EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 0),
-      //     // child: Column(
-      //     //   children: [
-      //     //     // To-Do: create skeleton loader, use Future Builder to render views according to request state
-      //     //     // Text(
-      //     //     //   "Lat: ${_currentPosition?.latitude ?? ""}\nLong: ${_currentPosition?.longitude ?? ""}",
-      //     //     //   style: const TextStyle(
-      //     //     //     fontSize: 32,
-      //     //     //     color: kWhite,
-      //     //     //   ),
-      //     //     // ),
-      //     //   ],
-      //     // ),
-      //   ),
-      // ),
+              : renderContent(),
     );
   }
 }
