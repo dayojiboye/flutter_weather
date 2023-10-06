@@ -5,9 +5,9 @@ const Color kTextPrimary = Color(0XFF000000);
 const Color kTextSecondary = Color(0XFF293C80);
 const Color kMuted = Color(0XFFD4D4D4);
 const Color kIconBg = Color(0XFFE7E5F3);
+const Color kWhite = Color(0XFFFFFFFF);
 
 themeData(context) => ThemeData(
-      // textTheme: GoogleFonts.openSansTextTheme(Theme.of(context).textTheme),
       fontFamily: "Aeonik",
       brightness: Brightness.light,
       visualDensity: VisualDensity.adaptivePlatformDensity,

@@ -1,12 +1,16 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
 class LocationService {
-  const LocationService({required this.context});
+  const LocationService({
+    required this.context,
+    required this.setIsLocationLoading,
+    required this.setLocationError,
+  });
 
   final BuildContext context;
+  final void Function() setIsLocationLoading;
+  final void Function(String) setLocationError;
 
   Future<bool> handleLocationPermission() async {
     bool serviceEnabled;
@@ -14,35 +18,27 @@ class LocationService {
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-              'Location services are disabled. Please enable the services'),
-        ),
-      );
+      setLocationError(
+          'Location permission is off.\nEnable device location to get current weather of your city.\nOr you could search for a city.');
+      setIsLocationLoading();
       return false;
     }
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Location permissions are denied'),
-          ),
-        );
+        setLocationError('Permission to access location was denied');
+        setIsLocationLoading();
         return false;
       }
     }
     if (permission == LocationPermission.deniedForever) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-              'Location permissions are permanently denied, we cannot request permissions.'),
-        ),
-      );
+      setLocationError(
+          'Location permissions are permanently denied, we cannot request permissions.');
+      setIsLocationLoading();
       return false;
     }
+    setIsLocationLoading();
     return true;
   }
 }
