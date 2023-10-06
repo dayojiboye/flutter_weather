@@ -43,10 +43,11 @@ class API {
         setState(ViewState.SUCCESS);
         return WeatherModel.fromJson(jsonDecode(response.body));
       } else {
-        throw Exception('Please enter a valid city');
+        setError('Please enter a valid city 🧐');
+        throw Exception("City doesn't exist!");
       }
     } catch (err) {
-      setError("Something went wrong!");
+      // setError("Something went wrong!");
       setState(ViewState.ERROR);
       throw Exception(err);
     }

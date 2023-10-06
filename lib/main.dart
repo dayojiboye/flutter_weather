@@ -3,16 +3,13 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_weather/utils/theme.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_weather/views/weather_screen.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 Future main() async {
   await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
     (fn) => runApp(
-      const ProviderScope(
-        child: MyApp(),
-      ),
+      const MyApp(),
     ),
   );
 }

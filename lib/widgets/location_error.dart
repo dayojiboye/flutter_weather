@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_weather/utils/theme.dart';
+import 'package:flutter_weather/widgets/button.dart';
 import 'package:geolocator/geolocator.dart';
 
 class LocationError extends StatelessWidget {
@@ -24,29 +25,11 @@ class LocationError extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          SizedBox(
-            height: 48,
-            width: 200,
-            child: TextButton(
-              onPressed: () async {
-                await Geolocator.openLocationSettings();
-              },
-              style: TextButton.styleFrom(
-                splashFactory: NoSplash.splashFactory,
-                backgroundColor: Colors.black,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              child: const Text(
-                "Enable location",
-                style: TextStyle(
-                  color: kWhite,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14,
-                ),
-              ),
-            ),
+          Button(
+            label: "Enable location",
+            onPressed: () async {
+              await Geolocator.openLocationSettings();
+            },
           )
         ],
       ),
