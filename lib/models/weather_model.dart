@@ -314,7 +314,7 @@ class Forecastday {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
-    data['date'] = date;
+    data['date'] = String;
     data['date_epoch'] = dateEpoch;
     if (day != null) {
       data['day'] = day!.toJson();

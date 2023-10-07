@@ -5,11 +5,12 @@ import 'package:flutter_weather/services/api.dart';
 import 'package:flutter_weather/services/location.dart';
 import 'package:flutter_weather/utils/theme.dart';
 import 'package:flutter_weather/widgets/app_bottom_sheet.dart';
-import 'package:flutter_weather/widgets/app_text_field.dart';
-import 'package:flutter_weather/widgets/button.dart';
+import 'package:flutter_weather/widgets/city_bottom_sheet.dart';
 import 'package:flutter_weather/widgets/loading_indicator.dart';
 import 'package:flutter_weather/widgets/location_error.dart';
+import 'package:flutter_weather/widgets/weather.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:iconsax/iconsax.dart';
 
 class WeatherScreen extends StatefulWidget {
   const WeatherScreen({super.key});
@@ -29,8 +30,14 @@ class _WeatherScreenState extends State<WeatherScreen> {
   @override
   void initState() {
     super.initState();
+    // WidgetsBinding.instance.addObserver(this);
     _getCurrentPosition();
   }
+
+  // @override
+  // void didChangeAppLifecycleState(AppLifecycleState state) {
+  //   if (state == AppLifecycleState.resumed) _getCurrentPosition();
+  // }
 
   @override
   void dispose() {
@@ -39,6 +46,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
   }
 
   void _getWeather(double? latitude, double? longitude) async {
+    setState(() {
+      _locationError = "";
+    });
     WeatherModel data = await API(
         latitude: latitude,
         longitude: longitude,
@@ -48,7 +58,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
           });
         },
         q: _cityController.text.isNotEmpty
-            ? _cityController.text
+            ? _cityController.text.trim()
             : latitude != null && longitude != null
                 ? "$latitude,$longitude"
                 : "",
@@ -83,15 +93,15 @@ class _WeatherScreenState extends State<WeatherScreen> {
           child: Text(
             _error,
             style: const TextStyle(
-              color: kTextPrimary,
+              color: kWhite,
               fontSize: 18,
             ),
           ),
         );
 
       case ViewState.SUCCESS:
-        return Center(
-          child: Text(_weatherData.location?.name ?? ""),
+        return Weather(
+          data: _weatherData,
         );
 
       default:
@@ -112,31 +122,16 @@ class _WeatherScreenState extends State<WeatherScreen> {
                   backgroundColor: kTextSecondary,
                   disabledElevation: 0,
                   child: const Icon(
-                    Icons.search,
+                    Iconsax.search_normal,
                     size: 32,
                   ),
                   onPressed: () {
                     AppBottomSheet(
                       context: context,
                       onDismiss: () => _cityController.clear(),
-                      child: Column(
-                        children: [
-                          AppTextField(
-                            controller: _cityController,
-                            hintText: "Enter city",
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Button(
-                            label: "Continue",
-                            width: double.infinity,
-                            onPressed: () {
-                              _getWeather(null, null);
-                              Navigator.of(context).pop();
-                            },
-                          )
-                        ],
+                      child: CityBottomSheet(
+                        controller: _cityController,
+                        getWeather: _getWeather,
                       ),
                     ).open();
                   },

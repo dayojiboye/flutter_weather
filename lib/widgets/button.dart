@@ -25,6 +25,7 @@ class Button extends StatelessWidget {
         style: TextButton.styleFrom(
           splashFactory: NoSplash.splashFactory,
           backgroundColor: kTextPrimary,
+          disabledBackgroundColor: kMuted,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(2),
           ),

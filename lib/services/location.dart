@@ -31,6 +31,9 @@ class LocationService {
         setIsLocationLoading();
         return false;
       }
+      // setLocationError('Permission to access location was denied');
+      // setIsLocationLoading();
+      // return false;
     }
     if (permission == LocationPermission.deniedForever) {
       setLocationError(

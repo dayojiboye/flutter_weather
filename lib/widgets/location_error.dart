@@ -10,28 +10,30 @@ class LocationError extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            errorMessage,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 16,
-              color: kWhite,
-              fontWeight: FontWeight.w500,
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              errorMessage,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 16,
+                color: kWhite,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-          ),
-          const SizedBox(height: 24),
-          Button(
-            label: "Enable location",
-            onPressed: () async {
-              await Geolocator.openLocationSettings();
-            },
-          )
-        ],
+            const SizedBox(height: 24),
+            Button(
+              label: "Enable location",
+              onPressed: () async {
+                await Geolocator.openLocationSettings();
+              },
+            )
+          ],
+        ),
       ),
     );
   }
