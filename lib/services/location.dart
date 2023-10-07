@@ -36,8 +36,7 @@ class LocationService {
       // return false;
     }
     if (permission == LocationPermission.deniedForever) {
-      setLocationError(
-          'Location permissions are permanently denied, we cannot request permissions.');
+      setLocationError('Location permissions are permanently denied');
       setIsLocationLoading();
       return false;
     }

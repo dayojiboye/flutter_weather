@@ -1,8 +1,18 @@
 # flutter_weather
 
-A new Flutter project.
+A basic weather app with Geolocator
 
 ## Getting Started
+
+<p float="left">
+  <img src="https://raw.githubusercontent.com/dayojiboye/flutter_weather /master/screenshots/shot1.png" width="250" />
+  <img src="https://raw.githubusercontent.com/dayojiboye/flutter_weather /master/screenshots/shot2.png" width="250" />
+  <img src="https://raw.githubusercontent.com/dayojiboye/flutter_weather /master/screenshots/shot3.png" width="250" />
+</p>
+<p float="left">
+  <img src="https://raw.githubusercontent.com/dayojiboye/flutter_weather /master/screenshots/shot4.png" width="250" />
+  <img src="https://raw.githubusercontent.com/dayojiboye/flutter_weather /master/screenshots/shot5.png" width="250" />
+</p>
 
 This project is a starting point for a Flutter application.
 
